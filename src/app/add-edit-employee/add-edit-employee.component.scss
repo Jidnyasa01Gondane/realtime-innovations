@@ -1,0 +1,39 @@
+ion-content {
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    height: 100%;
+  }
+  .custom-input {
+    border: 1px solid #e5e5e5; /* Change the color as needed */
+    border-radius: 4px; /* Optional: Add border radius for rounded corners */
+  }
+
+  .date-selector {
+    display: flex;
+    gap: 10px;
+
+    .arrow-separator {
+      align-items: center;
+      height: 100%;
+    }
+  }
+
+  .form-action-buttons {
+    display: flex;
+    justify-content: end;
+    gap: 20px;
+    align-self: end;
+    margin-top: auto;
+    border-top-style: solid;
+    border-top-width: 2px;
+    width: 100%;
+    padding: 10px 0 0;
+    border-top-color: #f2f2f2;
+  }
+
+  ion-select-option {
+    --width: 100%;
+  }
+}

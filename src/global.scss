@@ -34,4 +34,16 @@
 
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import '@ionic/angular/css/palettes/dark.system.css';
+@import "@ionic/angular/css/palettes/dark.system.css";
+
+:root {
+  --ion-color-primary: #1da1f2;
+}
+
+ion-modal#calender-modal {
+  --width: 90%;
+  --min-width: 250px;
+  --height: 75%;
+  --border-radius: 6px;
+  --box-shadow: 0 28px 48px rgba(0, 0, 0, 0.4);
+}

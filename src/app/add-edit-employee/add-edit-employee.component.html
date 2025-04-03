@@ -1,0 +1,59 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Add Employee Details</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form>
+    <ion-item class="custom-input">
+      <ion-input labelPlacement="stacked" placeholder="Employee name">
+        <ion-icon slot="start" name="person-outline" aria-hidden="true" color="primary"></ion-icon>
+      </ion-input>
+    </ion-item>
+    
+
+    <ion-item class="custom-input">
+      <ion-select placeholder="Select role" label-placement="stacked" interface="action-sheet">
+        <ion-select-option value="Product Designer">Product Designer</ion-select-option>
+        <ion-select-option value="Flutter Developer">Flutter Developer</ion-select-option>
+        <ion-select-option value="QA Tester">QA Tester</ion-select-option>
+        <ion-select-option value=" Product Owner"> Product Owner</ion-select-option>
+      </ion-select>
+      <ion-icon name="briefcase-outline" slot="start" color="primary"></ion-icon>
+    </ion-item>
+
+    <div class="date-selector">
+      <ion-item class="custom-input" id="open-custom-dialog">
+        <ion-input labelPlacement="stacked" placeholder="Start Date" >
+          <ion-icon slot="start" name="calendar-outline" aria-hidden="true" color="primary"></ion-icon>
+        </ion-input>
+      </ion-item>
+
+      <ion-icon slot="start" name="arrow-forward-outline" aria-hidden="true" class="arrow-separator"></ion-icon>
+
+      <ion-item class="custom-input" id="open-custom-dialog">
+        <ion-input labelPlacement="stacked" placeholder="End Date">
+          <ion-icon slot="start" name="calendar-outline" aria-hidden="true" color="primary"></ion-icon>
+        </ion-input>
+      </ion-item>
+    </div>
+    
+    <app-calender-input [inputDateTime]="dateTime1" [id]="'date-picker'" (dateEvent)="date1Changed($event)"></app-calender-input>
+    
+    <!-- <ion-item>
+      <ion-label position="floating">Today</ion-label>
+      <ion-datetime display-format="MM/DD/YYYY"></ion-datetime>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">No date</ion-label>
+      <ion-datetime display-format="MM/DD/YYYY"></ion-datetime>
+    </ion-item> -->
+
+    <div class="form-action-buttons">
+      <ion-button color="medium">Cancel</ion-button>
+      <ion-button color="primary">Save</ion-button>
+    </div>
+  </form>
+</ion-content>
