@@ -41,9 +41,9 @@
 }
 
 ion-modal#calender-modal {
-  --width: 90%;
+  --width: fit-content;
   --min-width: 250px;
-  --height: 75%;
+  --height: fit-content;
   --border-radius: 6px;
   --box-shadow: 0 28px 48px rgba(0, 0, 0, 0.4);
 }

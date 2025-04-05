@@ -11,3 +11,8 @@ ion-fab-button::part(native) {
   text-align: left;
   padding: 15px 15px;
 }
+
+ion-list-header{
+  --background: #f4f5f8;
+  --color: var(--ion-color-primary)
+}

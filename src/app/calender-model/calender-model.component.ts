@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
+import { ViewWillLeave } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import {
   IonIcon,
@@ -10,12 +11,16 @@ import {
   IonFooter,
 } from '@ionic/angular/standalone';
 import moment from 'moment';
-import { MomentInput } from 'moment';
 import { ModalController } from '@ionic/angular';
 import { WeekInterface } from './week.interface';
-import { caretBackOutline, caretForwardOutline } from 'ionicons/icons';
+import {
+  calendarOutline,
+  caretBackOutline,
+  caretForwardOutline,
+} from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { WEEKDAYS } from '../shared/calender.constant';
+import { ButtonText } from './weekday.enum';
 
 interface DayC extends moment.Moment {
   disabled?: boolean;
@@ -25,6 +30,13 @@ interface MonthC {
   monthName: string;
   monthNumber: number;
 }
+
+export type DateOption =
+  | 'today'
+  | 'nextMonday'
+  | 'nextTuesday'
+  | 'afterOneWeek'
+  | 'noDate';
 
 @Component({
   selector: 'app-calender-model',
@@ -48,9 +60,11 @@ export class CalenderModelComponent implements OnInit {
   @Input() public min!: moment.MomentInput;
   @Input() public max!: moment.MomentInput;
   @Input() public dateFormat!: string;
+  @Input() public buttons!: DateOption[];
 
   public date!: moment.Moment;
   public selectedDate!: any;
+  public selectedButton!: any;
   public calendar: { days: DayC[] }[] = [];
   public months: MonthC[][] = [];
   public years: number[][] = [];
@@ -65,11 +79,13 @@ export class CalenderModelComponent implements OnInit {
     monthPicker: false,
     yearPicker: false,
   };
+  public buttonText = ButtonText;
 
   constructor(private modalController: ModalController) {
     addIcons({
       caretBackOutline,
       caretForwardOutline,
+      calendarOutline,
     });
   }
 
@@ -83,15 +99,18 @@ export class CalenderModelComponent implements OnInit {
   }
 
   private initializeDates(): void {
-    this.setDate('today');
+    if (this.buttons.length && !this.inputDateTime) {
+      this.setDate(this.buttons[0]);
+    }
     this.min = this.min ? moment(this.min) : undefined;
     this.max = this.max ? moment(this.max) : undefined;
     this.date = this.inputDateTime ? moment(this.inputDateTime) : moment();
     this.selectedDate = this.date.clone();
   }
 
-  setDate(option: string): void {
+  setDate(option: DateOption): void {
     const today = new Date();
+    this.selectedButton = option;
     const options = {
       today: () => today.toISOString(),
       nextMonday: () => this.getNextDayOfWeek(today, 1).toISOString(),
@@ -101,8 +120,10 @@ export class CalenderModelComponent implements OnInit {
         nextWeek.setDate(today.getDate() + 7);
         return nextWeek.toISOString();
       },
+      noDate: () => undefined,
     };
-    this.selectedDate = options[option as keyof typeof options];
+    const calculatedDate = options[option]();
+    this.selectedDate = calculatedDate ? moment(calculatedDate) : undefined;
   }
 
   getNextDayOfWeek(date: Date, dayOfWeek: number): Date {
@@ -112,6 +133,10 @@ export class CalenderModelComponent implements OnInit {
   }
 
   public isSelectedDate(day: DayC): boolean {
+    if(!this.selectDate){
+      return false;
+    }
+
     return (
       this.selectedDate.date() === day.date() &&
       this.selectedDate.month() === day.month() &&
@@ -147,22 +172,21 @@ export class CalenderModelComponent implements OnInit {
     this.generateCalendar();
   }
 
-  public selectPreviousYears(): void {
-    this.updateSelectedYears(-1);
-  }
-
-  public selectNextYears(): void {
-    this.updateSelectedYears(1);
-  }
-
-  private updateSelectedYears(offset: number): void {
+  public selectPreviousYears() {
     const findInMatrix = this.findArrayInMatrix(this.years);
-    if (
-      findInMatrix > -1 &&
-      findInMatrix + offset >= 0 &&
-      findInMatrix + offset < this.years.length
-    ) {
-      this.selectedYears = this.setSelectedYears(findInMatrix + offset);
+    if (findInMatrix > -1) {
+      const newIndex = findInMatrix - 1;
+      this.selectedYears = this.setSelectedYears(newIndex);
+      this.getFirstLastYear();
+    }
+    this.disableNextPrevYears();
+  }
+
+  public selectNextYears() {
+    const findInMatrix = this.findArrayInMatrix(this.years);
+    if (findInMatrix > -1 && findInMatrix < this.years.length - 1) {
+      const newIndex = findInMatrix + 1;
+      this.selectedYears = this.setSelectedYears(newIndex);
       this.getFirstLastYear();
     }
     this.disableNextPrevYears();
@@ -212,9 +236,18 @@ export class CalenderModelComponent implements OnInit {
 
   private findArrayInMatrix(matrix: any[][]): number {
     const array = this.selectedYears.flat();
-    return matrix.findIndex(
-      (item) => JSON.stringify(item) === JSON.stringify(array)
-    );
+    let index = -1;
+
+    matrix.some((item, i) => {
+      if (JSON.stringify(item) === JSON.stringify(array)) {
+        index = i;
+        return true;
+      } else {
+        return false;
+      }
+    });
+
+    return index;
   }
 
   private getSelectedYears(year: number): number[][] {
@@ -240,15 +273,21 @@ export class CalenderModelComponent implements OnInit {
   }
 
   public disableNextPrevYears(): void {
-    this.nextYearDisabled = this.isYearDisabled(
-      this.selectedYears[this.selectedYears.length - 1]
-    );
-    this.prevYearDisabled = this.isYearDisabled(this.selectedYears[0]);
-  }
+    this.nextYearDisabled = false;
+    this.prevYearDisabled = false;
 
-  private isYearDisabled(yearArray: number[]): boolean {
-    const year = yearArray[yearArray.length - 1];
-    return this.years.some((subArray) => subArray.includes(year));
+    const lastSelectedYear =
+      this.selectedYears[this.selectedYears.length - 1].slice(-1)[0];
+    const lastYear = this.years[this.years.length - 1].slice(-1)[0];
+    if (lastYear === lastSelectedYear) {
+      this.nextYearDisabled = true;
+    }
+
+    const firstSelectedYear = this.selectedYears[0][0];
+    const firstYear = this.years[0][0];
+    if (firstYear === firstSelectedYear) {
+      this.prevYearDisabled = true;
+    }
   }
 
   private disableDaysOnDateRange(
@@ -257,7 +296,11 @@ export class CalenderModelComponent implements OnInit {
   ): void {
     for (const week of this.calendar) {
       for (const day of week.days) {
-        if ((min && day < min) || (max && day > max)) {
+        if (min && day < min) {
+          day.disabled = true;
+        }
+
+        if (max && day > max) {
           day.disabled = true;
         }
       }

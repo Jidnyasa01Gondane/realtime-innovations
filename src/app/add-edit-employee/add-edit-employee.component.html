@@ -1,59 +1,123 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-title>Add Employee Details</ion-title>
+    <ion-title>{{employeeId ? 'Edit' : 'Add'}} Employee Details</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-  <form>
+  <form [formGroup]="employee" (ngSubmit)="addEditEmployee()">
     <ion-item class="custom-input">
-      <ion-input labelPlacement="stacked" placeholder="Employee name">
-        <ion-icon slot="start" name="person-outline" aria-hidden="true" color="primary"></ion-icon>
+      <ion-input
+        labelPlacement="stacked"
+        placeholder="Employee name"
+        formControlName="name"
+      >
+        <ion-icon
+          slot="start"
+          name="person-outline"
+          aria-hidden="true"
+          color="primary"
+        ></ion-icon>
       </ion-input>
     </ion-item>
-    
-
+    <div
+      *ngIf="
+        employee.get('name')?.invalid &&
+        (employee.get('name')?.dirty || employee.get('name')?.touched)
+      "
+    >
+      <ion-text color="danger" *ngIf="employee.get('name')?.errors?.['required']"
+        >Name is required.</ion-text
+      >
+      <ion-text color="danger" *ngIf="employee.get('name')?.errors?.['minlength']"
+        >Name must be at least 3 characters long.</ion-text
+      >
+    </div>
     <ion-item class="custom-input">
-      <ion-select placeholder="Select role" label-placement="stacked" interface="action-sheet">
-        <ion-select-option value="Product Designer">Product Designer</ion-select-option>
-        <ion-select-option value="Flutter Developer">Flutter Developer</ion-select-option>
+      <ion-select
+        formControlName="role"
+        placeholder="Select role"
+        label-placement="stacked"
+        interface="action-sheet"
+      >
+        <ion-select-option value="Product Designer"
+          >Product Designer</ion-select-option
+        >
+        <ion-select-option value="Flutter Developer"
+          >Flutter Developer</ion-select-option
+        >
         <ion-select-option value="QA Tester">QA Tester</ion-select-option>
-        <ion-select-option value=" Product Owner"> Product Owner</ion-select-option>
+        <ion-select-option value=" Product Owner">
+          Product Owner</ion-select-option
+        >
       </ion-select>
-      <ion-icon name="briefcase-outline" slot="start" color="primary"></ion-icon>
+      <ion-icon
+        name="briefcase-outline"
+        slot="start"
+        color="primary"
+      ></ion-icon>
     </ion-item>
+    <div
+      *ngIf="
+        employee.get('role')?.invalid &&
+        (employee.get('role')?.dirty || employee.get('role')?.touched)
+      "
+    >
+      <ion-text color="danger" *ngIf="employee.get('role')?.errors?.['required']">Role is required.</ion-text>
+    </div>
 
     <div class="date-selector">
-      <ion-item class="custom-input" id="open-custom-dialog">
-        <ion-input labelPlacement="stacked" placeholder="Start Date" >
-          <ion-icon slot="start" name="calendar-outline" aria-hidden="true" color="primary"></ion-icon>
-        </ion-input>
-      </ion-item>
+      <div class="">
+        <app-calender-input
+          formControlName="startDate"
+          placeholder="Start Date"
+          [inputDateTime]="dateTime1"
+          [id]="'date-picker'"
+          (dateEvent)="date1Changed($event)"
+          [buttonConfig]="startBtnConfig"
+        ></app-calender-input>
 
-      <ion-icon slot="start" name="arrow-forward-outline" aria-hidden="true" class="arrow-separator"></ion-icon>
+        <div
+          *ngIf="
+            employee.get('startDate')?.invalid &&
+            (employee.get('startDate')?.dirty ||
+              employee.get('startDate')?.touched)
+          "
+        >
+          <ion-text color="danger" *ngIf="employee.get('startDate')?.errors?.['required']"
+            >Start Date is required.</ion-text
+          >
+        </div>
+      </div>
 
-      <ion-item class="custom-input" id="open-custom-dialog">
-        <ion-input labelPlacement="stacked" placeholder="End Date">
-          <ion-icon slot="start" name="calendar-outline" aria-hidden="true" color="primary"></ion-icon>
-        </ion-input>
-      </ion-item>
+      <ion-icon
+        slot="start"
+        name="arrow-forward-outline"
+        aria-hidden="true"
+        class="arrow-separator"
+      ></ion-icon>
+
+      <app-calender-input
+        formControlName="endDate"
+        placeholder="End Date"
+        [inputDateTime]="dateTime2"
+        [min]="minDate"
+        [id]="'date-picker'"
+        (dateEvent)="date2Changed($event)"
+        [buttonConfig]="endBtnConfig"
+      ></app-calender-input>
     </div>
-    
-    <app-calender-input [inputDateTime]="dateTime1" [id]="'date-picker'" (dateEvent)="date1Changed($event)"></app-calender-input>
-    
-    <!-- <ion-item>
-      <ion-label position="floating">Today</ion-label>
-      <ion-datetime display-format="MM/DD/YYYY"></ion-datetime>
-    </ion-item>
-
-    <ion-item>
-      <ion-label position="floating">No date</ion-label>
-      <ion-datetime display-format="MM/DD/YYYY"></ion-datetime>
-    </ion-item> -->
 
     <div class="form-action-buttons">
-      <ion-button color="medium">Cancel</ion-button>
-      <ion-button color="primary">Save</ion-button>
+      <ion-button
+        color="medium"
+        [routerLink]="employeeId ? ['../../home']: ['../']"
+        routerLinkActive="router-link-active"
+        >Cancel</ion-button
+      >
+      <ion-button color="primary" [disabled]="employee.invalid" type="submit"
+        >Save</ion-button
+      >
     </div>
   </form>
 </ion-content>

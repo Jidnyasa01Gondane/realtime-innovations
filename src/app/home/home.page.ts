@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   RefresherCustomEvent,
   IonHeader,
@@ -11,13 +11,17 @@ import {
   IonFab,
   IonFabButton,
   IonIcon,
+  IonListHeader,
+  IonItemSliding,
 } from '@ionic/angular/standalone';
-import { MessageComponent } from '../message/message.component';
+import { EmployeeDetailComponent } from '../employee/employee-details.component';
 
-import { DataService, Message } from '../services/data.service';
+import { DataService, Employee } from '../services/data.service';
 import { addIcons } from 'ionicons';
 import { addOutline } from 'ionicons/icons';
 import { RouterLink } from '@angular/router';
+import { BehaviorSubject, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { ViewWillLeave, ViewWillEnter } from '@ionic/angular';
 
 @Component({
   selector: 'app-home',
@@ -31,28 +35,53 @@ import { RouterLink } from '@angular/router';
     IonRefresher,
     IonRefresherContent,
     IonList,
-    MessageComponent,
+    EmployeeDetailComponent,
     IonFab,
     IonFabButton,
     IonIcon,
-    RouterLink
+    RouterLink,
+    IonListHeader,
+    IonItemSliding,
   ],
 })
-export class HomePage implements OnInit, OnDestroy {
+export class HomePage implements ViewWillLeave, ViewWillEnter {
   private data = inject(DataService);
-  employeeList: any = [];
+  currentEmployeeList: Employee[] = [];
+  previousEmployeeList: Employee[] = [];
+  employeeList: Employee[] = [];
+
+  private destroyed = new Subject();
+  refreshSubject = new BehaviorSubject<boolean>(false);
+
   constructor() {
     addIcons({ addOutline });
   }
-  ngOnDestroy(): void {
-    throw new Error('Method not implemented.');
+
+  ionViewWillLeave(): void {
+    this.destroyed.next(true);
+    this.destroyed.complete();
+    this.refreshSubject.complete();
   }
-  ngOnInit(): void {
-    this.data
-      .getMessages()
-      .pipe()
+
+  ionViewWillEnter(): void {
+    this.refreshSubject.asObservable()
+      .pipe(
+        tap(() => {
+          this.currentEmployeeList = [];
+          this.previousEmployeeList = [];
+        }),
+        switchMap(() => this.data.getMessages()),
+        takeUntil(this.destroyed)
+      )
       .subscribe((data) => {
         this.employeeList = data;
+        data.forEach((emp) => {
+          if (!this.data.isPastDate(emp.endDate)) {
+            this.currentEmployeeList.push(emp);
+          } else {
+            this.previousEmployeeList.push(emp);
+          }
+        });
       });
   }
 
@@ -60,5 +89,10 @@ export class HomePage implements OnInit, OnDestroy {
     setTimeout(() => {
       (ev as RefresherCustomEvent).detail.complete();
     }, 3000);
+    this.refreshSubject.next(true);
+  }
+
+  reloadList(event: boolean) {
+    this.refreshSubject.next(event);
   }
 }

@@ -1,4 +1,3 @@
-
 <ion-header>
   <ion-toolbar color="primary">
     <ion-title>Employee List</ion-title>
@@ -10,27 +9,43 @@
   </ion-refresher>
 
   @if (!employeeList.length) {
-    <div class="no-employee-container">
-      <img src="assets/no-emp.svg" alt="No records found" style="width: 150px; height: auto;">
-      <p>No employee records found</p>
-    </div>
+  <div class="no-employee-container">
+    <img
+      src="assets/no-emp.svg"
+      alt="No records found"
+      style="width: 150px; height: auto"
+    />
+    <p>No employee records found</p>
+  </div>
   } @else {
-    <ion-header collapse="condense">
-      <ion-toolbar>
-        <ion-title size="large">
-          Inbox
-        </ion-title>
-      </ion-toolbar>
-    </ion-header>
-    <ion-list>
-      @for (message of employeeList; track message) {
-        <app-message [message]="message"></app-message>
-      }
-    </ion-list>
-  } 
+    @if(currentEmployeeList.length) {
+      <ion-list class="ion-no-padding">
+        <ion-list-header>Current Employees</ion-list-header>
+        @for (employee of currentEmployeeList; track employee.id) {
+          <ion-item-sliding>
+            <app-employee-details [employee]="employee" (isDeleted)="reloadList($event)"></app-employee-details>
+          </ion-item-sliding>
+        }
+      </ion-list>
+    }
+    @if(previousEmployeeList.length) {
+      <ion-list class="ion-no-padding">
+        <ion-list-header>Previous Employees</ion-list-header>
+        @for (employee of previousEmployeeList; track employee.id) {
+          <ion-item-sliding>
+            <app-employee-details [employee]="employee" (isDeleted)="reloadList($event)"></app-employee-details>
+          </ion-item-sliding>
+        }
+      </ion-list>
+    }
+  }
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button color="primary" [routerLink]="['/add']" routerLinkActive="router-link-active" >
+    <ion-fab-button
+      color="primary"
+      [routerLink]="['/add']"
+      routerLinkActive="router-link-active"
+    >
       <ion-icon name="add-outline"></ion-icon>
     </ion-fab-button>
   </ion-fab>

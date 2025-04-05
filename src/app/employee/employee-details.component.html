@@ -1,0 +1,15 @@
+@if (employee) {
+<ion-item [routerLink]="'/edit/' + employee.id">
+  <ion-label>
+    <h2>{{employee.name}}</h2>
+    <p>{{employee.role}}</p>
+    <p>From {{employee.startDate}}</p>
+    <p *ngIf="employee.endDate">{{employee.endDate}}</p>
+  </ion-label>
+</ion-item>
+<ion-item-options>
+  <ion-item-option color="danger" (click)="deleteEmployee(employee.id)">
+    <ion-icon name="trash-outline"></ion-icon>
+  </ion-item-option>
+</ion-item-options>
+}

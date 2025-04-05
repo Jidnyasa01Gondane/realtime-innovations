@@ -6,12 +6,12 @@ export const routes: Routes = [
     loadComponent: () => import('./home/home.page').then((m) => m.HomePage),
   },
   {
-    path: 'message/:id',
+    path: 'add',
     loadComponent: () =>
-      import('./view-message/view-message.page').then((m) => m.ViewMessagePage),
+      import('./add-edit-employee/add-edit-employee.component').then((m) => m.AddEditEmployeeComponent),
   },
   {
-    path: 'add',
+    path: 'edit/:id',
     loadComponent: () =>
       import('./add-edit-employee/add-edit-employee.component').then((m) => m.AddEditEmployeeComponent),
   },
