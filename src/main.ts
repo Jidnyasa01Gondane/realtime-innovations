@@ -5,7 +5,10 @@ import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular/standalo
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
 
+import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
+
 import { provideIndexedDb, DBConfig } from 'ngx-indexed-db';
+import { environment } from './environments/environment';
 
 const dbConfig: DBConfig  = {
   name: 'Realtime Innovation',
@@ -28,5 +31,6 @@ bootstrapApplication(AppComponent, {
     provideIonicAngular(),
     provideRouter(routes, withPreloading(PreloadAllModules), withComponentInputBinding()),
     provideIndexedDb(dbConfig),
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
   ],
 });
