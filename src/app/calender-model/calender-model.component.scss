@@ -1,6 +1,7 @@
 :host {
   justify-content: flex-start;
   gap: 16px;
+  padding: 10px;
 }
 
 .selected {
@@ -77,7 +78,6 @@ ion-footer {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 0 10px;
-    padding: 0 10px;
   }
 
   ion-button {

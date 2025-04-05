@@ -21,7 +21,7 @@ export enum WeekdayNumberEnum {
 export enum ButtonText {
   'today' = 'Today',
   'nextMonday' = 'Next Monday',
-  'nextTuesday' = 'NextTuesday',
+  'nextTuesday' = 'Next Tuesday',
   'afterOneWeek' = 'After One Week',
   'noDate' = 'No Date',
 }

@@ -98,11 +98,16 @@ export class CalenderModelComponent implements OnInit {
   }
 
   public isSelectedDate(day: DayC): boolean {
-    if (!this.selectDate) {
+    if (!this.selectedDate) {
       return false;
     }
 
-    return this.selectedDate.date() === day.date() && this.selectedDate.month() === day.month() && !day.disabled;
+    return (
+      this.selectedDate.date() === day.date() &&
+      this.selectedDate.month() === day.month() &&
+      this.selectedDate.year() === day.year() &&
+      !day.disabled
+    );
   }
 
   public async cancelModal(): Promise<void> {
@@ -192,7 +197,7 @@ export class CalenderModelComponent implements OnInit {
     this.min = this.min ? moment(this.min) : undefined;
     this.max = this.max ? moment(this.max) : undefined;
     this.date = this.inputDateTime ? moment(this.inputDateTime) : moment();
-    this.selectedDate = this.date.clone();
+    this.selectedDate = this.inputDateTime ? this.date.clone() : this.selectedDate;
   }
 
   private generateMonths(): MonthC[][] {

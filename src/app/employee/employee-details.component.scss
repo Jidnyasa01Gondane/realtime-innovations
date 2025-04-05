@@ -1,8 +1,3 @@
-ion-item {
-  --padding-start: 0;
-  --inner-padding-end: 0;
-}
-
 ion-label {
   margin-top: 12px;
   margin-bottom: 12px;
@@ -11,14 +6,6 @@ ion-label {
 ion-item h2 {
   font-weight: 600;
   margin: 0;
-
-  /**
-   * With larger font scales
-   * the date/time should wrap to the next
-   * line. However, there should be
-   * space between the name and the date/time
-   * if they can appear on the same line.
-   */
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;

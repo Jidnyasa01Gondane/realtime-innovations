@@ -20,3 +20,8 @@ ion-list-header {
   --background: #f4f5f8;
   --color: var(--ion-color-primary);
 }
+
+.ios ion-list-header {
+  font-size: 16px;
+  align-items: center;
+}

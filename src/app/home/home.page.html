@@ -3,7 +3,7 @@
     <ion-title>Employee List</ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content [fullscreen]="true" class="ion-padding">
+<ion-content>
   <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
@@ -42,7 +42,7 @@
     </ion-fab-button>
   </ion-fab>
 </ion-content>
-@if (employeeList.length) {
+@if (employeeList.length && !this.isLargerScreen) {
   <ion-footer>
     <ion-toolbar>
       <ion-title size="small">Swipe left to delete</ion-title>

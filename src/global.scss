@@ -47,3 +47,9 @@ ion-modal#calender-modal {
   --border-radius: 6px;
   --box-shadow: 0 28px 48px rgba(0, 0, 0, 0.4);
 }
+
+.ios ion-title {
+  padding-inline-start: 20px;
+  padding-inline-end: 20px;
+  text-align: left;
+}
