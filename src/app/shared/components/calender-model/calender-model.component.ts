@@ -7,7 +7,7 @@ import { ModalController } from '@ionic/angular';
 import { WeekInterface } from './week.interface';
 import { calendarOutline, caretBackOutline, caretForwardOutline } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
-import { WEEKDAYS } from '../shared/calender.constant';
+import { WEEKDAYS } from '../../constants/calender.constant';
 import { ButtonText } from './weekday.enum';
 
 interface DayC extends moment.Moment {

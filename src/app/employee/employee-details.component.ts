@@ -3,17 +3,17 @@ import { RouterLink } from '@angular/router';
 import { Platform, IonItem, IonLabel, IonItemOptions, IonItemOption, IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { trashOutline } from 'ionicons/icons';
-import { DataService, Employee } from '../services/data.service';
-import { CommonModule } from '@angular/common';
+import { DataService, Employee } from '../shared/services/data.service';
+
 import { lastValueFrom } from 'rxjs';
-import { ToasterService } from '../shared/toaster.service';
+import { ToasterService } from '../shared/services/toaster.service';
 
 @Component({
   selector: 'app-employee-details',
   templateUrl: './employee-details.component.html',
   styleUrls: ['./employee-details.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, IonItem, IonLabel, CommonModule, IonItemOptions, IonItemOption, IonIcon],
+  imports: [RouterLink, IonItem, IonLabel, IonItemOptions, IonItemOption, IonIcon],
   standalone: true,
 })
 export class EmployeeDetailComponent implements OnInit {

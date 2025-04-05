@@ -4,7 +4,9 @@
       <h2>{{ employee.name }}</h2>
       <p>{{ employee.role }}</p>
       <p>From {{ employee.startDate }}</p>
-      <p *ngIf="employee.endDate">{{ employee.endDate }}</p>
+      @if (employee.endDate) {
+        <p>{{ employee.endDate }}</p>
+      }
     </ion-label>
   </ion-item>
   @if (isLargerScreen) {

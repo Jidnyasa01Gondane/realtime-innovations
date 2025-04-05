@@ -16,14 +16,14 @@ import {
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { personOutline, briefcaseOutline, calendarOutline, arrowForwardOutline, trashOutline } from 'ionicons/icons';
-import { CalenderInputComponent } from '../calender-input/calender-input.component';
+import { CalenderInputComponent } from '../shared/components/calender-input/calender-input.component';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { DataService, Employee } from '../services/data.service';
+
+import { DataService, Employee } from '../shared/services/data.service';
 import { lastValueFrom, Subject, takeUntil } from 'rxjs';
 import moment from 'moment';
-import { ToasterService } from '../shared/toaster.service';
+import { ToasterService } from '../shared/services/toaster.service';
 
 @Component({
   selector: 'app-add-edit-employee',
@@ -44,7 +44,6 @@ import { ToasterService } from '../shared/toaster.service';
     CalenderInputComponent,
     ReactiveFormsModule,
     RouterLink,
-    CommonModule,
     IonText,
     IonButtons,
   ],

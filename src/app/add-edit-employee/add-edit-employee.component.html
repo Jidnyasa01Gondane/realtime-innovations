@@ -18,10 +18,16 @@
         <ion-icon slot="start" name="person-outline" aria-hidden="true" color="primary"></ion-icon>
       </ion-input>
     </ion-item>
-    <div *ngIf="employee.get('name')?.invalid && (employee.get('name')?.dirty || employee.get('name')?.touched)">
-      <ion-text color="danger" *ngIf="employee.get('name')?.errors?.['required']">Name is required.</ion-text>
-      <ion-text color="danger" *ngIf="employee.get('name')?.errors?.['minlength']">Name must be at least 3 characters long.</ion-text>
-    </div>
+    @if (employee.get('name')?.invalid && (employee.get('name')?.dirty || employee.get('name')?.touched)) {
+      <div>
+        @if (employee.get('name')?.errors?.['required']) {
+          <ion-text color="danger">Name is required.</ion-text>
+        }
+        @if (employee.get('name')?.errors?.['minlength']) {
+          <ion-text color="danger">Name must be at least 3 characters long.</ion-text>
+        }
+      </div>
+    }
     <ion-item class="custom-input">
       <ion-select formControlName="role" placeholder="Select role" label-placement="stacked" interface="action-sheet">
         <ion-select-option value="Product Designer">Product Designer</ion-select-option>
@@ -31,9 +37,13 @@
       </ion-select>
       <ion-icon name="briefcase-outline" slot="start" color="primary"></ion-icon>
     </ion-item>
-    <div *ngIf="employee.get('role')?.invalid && (employee.get('role')?.dirty || employee.get('role')?.touched)">
-      <ion-text color="danger" *ngIf="employee.get('role')?.errors?.['required']">Role is required.</ion-text>
-    </div>
+    @if (employee.get('role')?.invalid && (employee.get('role')?.dirty || employee.get('role')?.touched)) {
+      <div>
+        @if (employee.get('role')?.errors?.['required']) {
+          <ion-text color="danger">Role is required.</ion-text>
+        }
+      </div>
+    }
 
     <div class="date-selector">
       <div class="date-container">
@@ -45,9 +55,13 @@
           (dateEvent)="date1Changed($event)"
           [buttonConfig]="startBtnConfig"></app-calender-input>
 
-        <div *ngIf="employee.get('startDate')?.invalid && (employee.get('startDate')?.dirty || employee.get('startDate')?.touched)">
-          <ion-text color="danger" *ngIf="employee.get('startDate')?.errors?.['required']">Start Date is required.</ion-text>
-        </div>
+        @if (employee.get('startDate')?.invalid && (employee.get('startDate')?.dirty || employee.get('startDate')?.touched)) {
+          <div>
+            @if (employee.get('startDate')?.errors?.['required']) {
+              <ion-text color="danger">Start Date is required.</ion-text>
+            }
+          </div>
+        }
       </div>
 
       <ion-icon slot="start" name="arrow-forward-outline" aria-hidden="true" class="arrow-separator"></ion-icon>

@@ -1,4 +1,4 @@
-import { WeekdayEnum, WeekdayNumberEnum } from '../calender-model/weekday.enum';
+import { WeekdayEnum, WeekdayNumberEnum } from '../components/calender-model/weekday.enum';
 
 export const WEEKDAYS = [
   {

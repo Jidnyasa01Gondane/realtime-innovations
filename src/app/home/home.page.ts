@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit, ViewChildren } from '@angular/core';
+import { Component, computed, inject, OnDestroy, OnInit, Signal, signal, ViewChildren, WritableSignal } from '@angular/core';
 import {
   RefresherCustomEvent,
   IonHeader,
@@ -17,11 +17,11 @@ import {
 } from '@ionic/angular/standalone';
 import { EmployeeDetailComponent } from '../employee/employee-details.component';
 
-import { DataService, Employee } from '../services/data.service';
+import { DataService, Employee } from '../shared/services/data.service';
 import { addIcons } from 'ionicons';
 import { addOutline } from 'ionicons/icons';
 import { RouterLink } from '@angular/router';
-import { BehaviorSubject, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { BehaviorSubject, Subject, switchMap, takeUntil } from 'rxjs';
 import { ViewWillEnter, Platform } from '@ionic/angular';
 
 @Component({
@@ -49,10 +49,11 @@ import { ViewWillEnter, Platform } from '@ionic/angular';
 export class HomePage implements ViewWillEnter, OnInit, OnDestroy {
   @ViewChildren('slidingItem') slidingItem!: IonItemSliding[];
 
-  currentEmployeeList: Employee[] = [];
-  previousEmployeeList: Employee[] = [];
-  employeeList: Employee[] = [];
+  employeeList: WritableSignal<Employee[]> = signal([]);
   isLargerScreen = false;
+
+  currentEmployeeList: Signal<Employee[]> = computed(() => this.employeeList().filter(emp => !this.data.isPastDate(emp.endDate)));
+  previousEmployeeList: Signal<Employee[]> = computed(() => this.employeeList().filter(emp => this.data.isPastDate(emp.endDate)));
 
   private destroyed = new Subject();
   private refreshSubject = new BehaviorSubject<boolean>(false);
@@ -64,6 +65,7 @@ export class HomePage implements ViewWillEnter, OnInit, OnDestroy {
     this.checkDeviceSize();
   }
 
+  
   ngOnInit(): void {
     window.addEventListener('resize', () => this.checkDeviceSize());
   }
@@ -78,22 +80,11 @@ export class HomePage implements ViewWillEnter, OnInit, OnDestroy {
     this.refreshSubject
       .asObservable()
       .pipe(
-        tap(() => {
-          this.currentEmployeeList = [];
-          this.previousEmployeeList = [];
-        }),
         switchMap(() => this.data.getMessages()),
         takeUntil(this.destroyed)
       )
       .subscribe(data => {
-        this.employeeList = data;
-        data.forEach(emp => {
-          if (!this.data.isPastDate(emp.endDate)) {
-            this.currentEmployeeList.push(emp);
-          } else {
-            this.previousEmployeeList.push(emp);
-          }
-        });
+        this.employeeList.update(() => [...data]);
       });
   }
 
