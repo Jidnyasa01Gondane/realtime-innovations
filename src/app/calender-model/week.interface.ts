@@ -1,7 +1,7 @@
-import {WeekdayEnum} from './weekday.enum';
+import { WeekdayEnum } from './weekday.enum';
 
 export interface WeekInterface {
-    day: WeekdayEnum;
-    shortDay?: string;
-    number: number;
+  day: WeekdayEnum;
+  shortDay?: string;
+  number: number;
 }

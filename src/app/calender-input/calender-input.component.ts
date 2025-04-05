@@ -1,9 +1,7 @@
 import { Component, EventEmitter, forwardRef, Input, Output } from '@angular/core';
 import { ViewWillEnter } from '@ionic/angular';
 import { ModalController } from '@ionic/angular';
-import {
-  CalenderModelComponent,
-} from '../calender-model/calender-model.component';
+import { CalenderModelComponent } from '../calender-model/calender-model.component';
 import moment from 'moment';
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { IonItem, IonInput, IonIcon } from '@ionic/angular/standalone';
@@ -27,7 +25,7 @@ import { calendarOutline } from 'ionicons/icons';
 export class CalenderInputComponent implements ViewWillEnter, ControlValueAccessor {
   @Output() public dateEvent: EventEmitter<string> = new EventEmitter<string>();
   @Input() public inputDateTime!: string;
-  @Input() public placeholder: string = '';
+  @Input() public placeholder = '';
   @Input() public id!: string;
   @Input() public min?: string;
   @Input() public max?: string;
@@ -36,10 +34,6 @@ export class CalenderInputComponent implements ViewWillEnter, ControlValueAccess
 
   public formattedDateTime!: string;
 
-  public dateTime: any = {
-    date: '',
-    time: '',
-  };
   private onChange: ((value: string) => void) | undefined;
   private onTouched: (() => void) | undefined;
 
@@ -47,28 +41,30 @@ export class CalenderInputComponent implements ViewWillEnter, ControlValueAccess
     addIcons({ calendarOutline });
   }
 
-  writeValue(value: any): void {
+  writeValue(value: string): void {
     this.formattedDateTime = value;
   }
 
+  /* eslint-disable @typescript-eslint/no-explicit-any*/
   registerOnChange(fn: any): void {
     this.onChange = fn;
   }
 
+  /* eslint-disable @typescript-eslint/no-explicit-any*/
   registerOnTouched(fn: any): void {
     this.onTouched = fn;
   }
 
-  public ionViewWillEnter() {
+  public ionViewWillEnter(): void {
     this.formatDateTime();
   }
 
-  public async onClick() {
-    if(this.onTouched){
-      this.onTouched()
+  public async onClick(): Promise<void> {
+    if (this.onTouched) {
+      this.onTouched();
     }
     const existingModal = await this.modalController.getTop();
-    if(existingModal) {
+    if (existingModal) {
       return;
     }
     const modal = await this.modalController.create({
@@ -82,34 +78,30 @@ export class CalenderInputComponent implements ViewWillEnter, ControlValueAccess
       },
       cssClass: 'custom-datetime-picker',
       id: 'calender-modal',
-      backdropDismiss: false
+      backdropDismiss: false,
     });
     await modal.present();
 
-    modal.onDidDismiss().then((result) => {
+    modal.onDidDismiss().then(result => {
       if (result && result.data) {
-        if (result.data.length === 0 || Object.keys(result.data).length === 0) {
+        if (Object.keys(result.data).length === 0) {
           result.data = undefined;
         }
         if (result.data) {
           if (result.data.dateTime) {
-            this.inputDateTime = moment(result.data.dateTime).format(
-              'YYYY-MM-DD'
-            );
+            this.inputDateTime = moment(result.data.dateTime).format('YYYY-MM-DD');
           }
           this.formatDateTime();
           this.dateEvent.emit(this.inputDateTime);
         }
-        if(this.onChange) {
+        if (this.onChange) {
           this.onChange(result.data ?? this.inputDateTime);
         }
       }
     });
   }
 
-  private formatDateTime() {
-    this.formattedDateTime = moment(this.inputDateTime).format(
-      this.dateFormat ?? 'L'
-    );
+  private formatDateTime(): void {
+    this.formattedDateTime = moment(this.inputDateTime).format(this.dateFormat ?? 'L');
   }
 }

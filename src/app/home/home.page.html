@@ -9,30 +9,26 @@
   </ion-refresher>
 
   @if (!employeeList.length) {
-  <div class="no-employee-container">
-    <img
-      src="assets/no-emp.svg"
-      alt="No records found"
-      style="width: 150px; height: auto"
-    />
-    <p>No employee records found</p>
-  </div>
+    <div class="no-employee-container">
+      <img src="assets/no-emp.svg" alt="No records found" style="width: 150px; height: auto" />
+      <p>No employee records found</p>
+    </div>
   } @else {
-    @if(currentEmployeeList.length) {
+    @if (currentEmployeeList.length) {
       <ion-list class="ion-no-padding">
         <ion-list-header>Current Employees</ion-list-header>
         @for (employee of currentEmployeeList; track employee.id) {
-          <ion-item-sliding>
+          <ion-item-sliding [disabled]="isLargerScreen" #slidingItem>
             <app-employee-details [employee]="employee" (isDeleted)="reloadList($event)"></app-employee-details>
           </ion-item-sliding>
         }
       </ion-list>
     }
-    @if(previousEmployeeList.length) {
+    @if (previousEmployeeList.length) {
       <ion-list class="ion-no-padding">
         <ion-list-header>Previous Employees</ion-list-header>
         @for (employee of previousEmployeeList; track employee.id) {
-          <ion-item-sliding>
+          <ion-item-sliding [disabled]="isLargerScreen" #slidingItem>
             <app-employee-details [employee]="employee" (isDeleted)="reloadList($event)"></app-employee-details>
           </ion-item-sliding>
         }
@@ -41,12 +37,15 @@
   }
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button
-      color="primary"
-      [routerLink]="['/add']"
-      routerLinkActive="router-link-active"
-    >
+    <ion-fab-button color="primary" [routerLink]="['/add']" routerLinkActive="router-link-active">
       <ion-icon name="add-outline"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 </ion-content>
+@if (employeeList.length) {
+  <ion-footer>
+    <ion-toolbar>
+      <ion-title size="small">Swipe left to delete</ion-title>
+    </ion-toolbar>
+  </ion-footer>
+}

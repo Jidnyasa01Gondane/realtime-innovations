@@ -4,7 +4,11 @@ ion-fab-button::part(native) {
 
 .no-employee-container {
   text-align: center;
-  margin-top: 50%;
+  margin-top: 25%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 .title-default {
@@ -12,7 +16,7 @@ ion-fab-button::part(native) {
   padding: 15px 15px;
 }
 
-ion-list-header{
+ion-list-header {
   --background: #f4f5f8;
-  --color: var(--ion-color-primary)
+  --color: var(--ion-color-primary);
 }

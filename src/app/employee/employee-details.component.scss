@@ -11,7 +11,7 @@ ion-label {
 ion-item h2 {
   font-weight: 600;
   margin: 0;
-  
+
   /**
    * With larger font scales
    * the date/time should wrap to the next
@@ -36,7 +36,18 @@ ion-item .date {
   display: flex;
 }
 
-ion-icon{
+ion-icon {
   --padding-left: 30px;
   --padding-right: 30px;
+}
+
+@media (min-width: 786px) {
+  ion-item-options {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  ion-item-options[side='end'] {
+    margin-left: auto;
+  }
 }

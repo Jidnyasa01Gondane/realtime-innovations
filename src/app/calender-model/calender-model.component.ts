@@ -1,23 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { ViewWillLeave } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
-import {
-  IonIcon,
-  IonGrid,
-  IonCol,
-  IonButton,
-  IonRow,
-  IonFooter,
-} from '@ionic/angular/standalone';
+import { IonIcon, IonGrid, IonCol, IonButton, IonRow, IonFooter } from '@ionic/angular/standalone';
 import moment from 'moment';
 import { ModalController } from '@ionic/angular';
 import { WeekInterface } from './week.interface';
-import {
-  calendarOutline,
-  caretBackOutline,
-  caretForwardOutline,
-} from 'ionicons/icons';
+import { calendarOutline, caretBackOutline, caretForwardOutline } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { WEEKDAYS } from '../shared/calender.constant';
 import { ButtonText } from './weekday.enum';
@@ -31,28 +19,13 @@ interface MonthC {
   monthNumber: number;
 }
 
-export type DateOption =
-  | 'today'
-  | 'nextMonday'
-  | 'nextTuesday'
-  | 'afterOneWeek'
-  | 'noDate';
+export type DateOption = 'today' | 'nextMonday' | 'nextTuesday' | 'afterOneWeek' | 'noDate';
 
 @Component({
   selector: 'app-calender-model',
   templateUrl: './calender-model.component.html',
   styleUrls: ['./calender-model.component.scss'],
-  imports: [
-    IonGrid,
-    IonCol,
-    IonIcon,
-    IonButton,
-    IonRow,
-    IonFooter,
-    IonButton,
-    FormsModule,
-    CommonModule,
-  ],
+  imports: [IonGrid, IonCol, IonIcon, IonButton, IonRow, IonFooter, IonButton, FormsModule, CommonModule],
   providers: [ModalController],
 })
 export class CalenderModelComponent implements OnInit {
@@ -64,7 +37,7 @@ export class CalenderModelComponent implements OnInit {
 
   public date!: moment.Moment;
   public selectedDate!: any;
-  public selectedButton!: any;
+  public selectedButton!: DateOption;
   public calendar: { days: DayC[] }[] = [];
   public months: MonthC[][] = [];
   public years: number[][] = [];
@@ -89,7 +62,7 @@ export class CalenderModelComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.initializeDates();
     this.generateCalendar();
     this.months = this.generateMonths();
@@ -98,29 +71,20 @@ export class CalenderModelComponent implements OnInit {
     this.getFirstLastYear();
   }
 
-  private initializeDates(): void {
-    if (this.buttons.length && !this.inputDateTime) {
-      this.setDate(this.buttons[0]);
-    }
-    this.min = this.min ? moment(this.min) : undefined;
-    this.max = this.max ? moment(this.max) : undefined;
-    this.date = this.inputDateTime ? moment(this.inputDateTime) : moment();
-    this.selectedDate = this.date.clone();
-  }
-
   setDate(option: DateOption): void {
     const today = new Date();
     this.selectedButton = option;
     const options = {
-      today: () => today.toISOString(),
-      nextMonday: () => this.getNextDayOfWeek(today, 1).toISOString(),
-      nextTuesday: () => this.getNextDayOfWeek(today, 2).toISOString(),
-      afterOneWeek: () => {
+      today: (): string => today.toISOString(),
+      nextMonday: (): string => this.getNextDayOfWeek(today, 1).toISOString(),
+      nextTuesday: (): string => this.getNextDayOfWeek(today, 2).toISOString(),
+      afterOneWeek: (): string => {
         const nextWeek = new Date(today);
         nextWeek.setDate(today.getDate() + 7);
+
         return nextWeek.toISOString();
       },
-      noDate: () => undefined,
+      noDate: (): undefined => undefined,
     };
     const calculatedDate = options[option]();
     this.selectedDate = calculatedDate ? moment(calculatedDate) : undefined;
@@ -129,26 +93,23 @@ export class CalenderModelComponent implements OnInit {
   getNextDayOfWeek(date: Date, dayOfWeek: number): Date {
     const resultDate = new Date(date.getTime());
     resultDate.setDate(date.getDate() + ((7 + dayOfWeek - date.getDay()) % 7));
+
     return resultDate;
   }
 
   public isSelectedDate(day: DayC): boolean {
-    if(!this.selectDate){
+    if (!this.selectDate) {
       return false;
     }
 
-    return (
-      this.selectedDate.date() === day.date() &&
-      this.selectedDate.month() === day.month() &&
-      !day.disabled
-    );
+    return this.selectedDate.date() === day.date() && this.selectedDate.month() === day.month() && !day.disabled;
   }
 
-  public async cancelModal() {
+  public async cancelModal(): Promise<void> {
     await this.modalController.dismiss();
   }
 
-  public async dismissModal() {
+  public async dismissModal(): Promise<void> {
     const dateTime = moment(`${this.selectedDate.format('YYYY-MM-DD')}`);
 
     await this.modalController.dismiss({
@@ -172,7 +133,7 @@ export class CalenderModelComponent implements OnInit {
     this.generateCalendar();
   }
 
-  public selectPreviousYears() {
+  public selectPreviousYears(): void {
     const findInMatrix = this.findArrayInMatrix(this.years);
     if (findInMatrix > -1) {
       const newIndex = findInMatrix - 1;
@@ -182,7 +143,7 @@ export class CalenderModelComponent implements OnInit {
     this.disableNextPrevYears();
   }
 
-  public selectNextYears() {
+  public selectNextYears(): void {
     const findInMatrix = this.findArrayInMatrix(this.years);
     if (findInMatrix > -1 && findInMatrix < this.years.length - 1) {
       const newIndex = findInMatrix + 1;
@@ -193,9 +154,7 @@ export class CalenderModelComponent implements OnInit {
   }
 
   public selectMode(key: keyof typeof this.mode): void {
-    Object.keys(this.mode).forEach(
-      (k) => (this.mode[k as keyof typeof this.mode] = k === key)
-    );
+    Object.keys(this.mode).forEach(k => (this.mode[k as keyof typeof this.mode] = k === key));
   }
 
   public selectMonth(monthNumber: number): void {
@@ -209,75 +168,11 @@ export class CalenderModelComponent implements OnInit {
     this.selectMode('monthPicker');
   }
 
-  private generateMonths(): MonthC[][] {
-    return Array.from({ length: 12 }, (_, i) => ({
-      monthName: moment.monthsShort()[i],
-      monthNumber: i,
-    })).reduce(
-      (acc, month, i) => {
-        acc[Math.floor(i / 3)].push(month);
-        return acc;
-      },
-      [[], [], [], []] as MonthC[][]
-    );
-  }
-
-  private generateYears(): number[][] {
-    const startYear = 1970;
-    const endYear = 2099;
-    const yearsToSort = Array.from(
-      { length: endYear - startYear + 1 },
-      (_, i) => startYear + i
-    );
-    return Array.from({ length: Math.ceil(yearsToSort.length / 16) }, (_, i) =>
-      yearsToSort.slice(i * 16, (i + 1) * 16)
-    );
-  }
-
-  private findArrayInMatrix(matrix: any[][]): number {
-    const array = this.selectedYears.flat();
-    let index = -1;
-
-    matrix.some((item, i) => {
-      if (JSON.stringify(item) === JSON.stringify(array)) {
-        index = i;
-        return true;
-      } else {
-        return false;
-      }
-    });
-
-    return index;
-  }
-
-  private getSelectedYears(year: number): number[][] {
-    const subArray = this.years.find((subArray) => subArray.includes(year));
-    return this.formatSelectedYears(subArray || this.years[0]);
-  }
-
-  private formatSelectedYears(selectedYears: number[]): number[][] {
-    return Array.from({ length: Math.ceil(selectedYears.length / 4) }, (_, i) =>
-      selectedYears.slice(i * 4, (i + 1) * 4)
-    );
-  }
-
-  private getFirstLastYear(): void {
-    this.firstYear = this.selectedYears[0][0];
-    const lastSubArray = this.selectedYears[this.selectedYears.length - 1];
-    this.lastYear = lastSubArray[lastSubArray.length - 1];
-  }
-
-  private setSelectedYears(index: number): number[][] {
-    const selectedArr = this.years[index];
-    return selectedArr ? this.formatSelectedYears(selectedArr) : [];
-  }
-
   public disableNextPrevYears(): void {
     this.nextYearDisabled = false;
     this.prevYearDisabled = false;
 
-    const lastSelectedYear =
-      this.selectedYears[this.selectedYears.length - 1].slice(-1)[0];
+    const lastSelectedYear = this.selectedYears[this.selectedYears.length - 1].slice(-1)[0];
     const lastYear = this.years[this.years.length - 1].slice(-1)[0];
     if (lastYear === lastSelectedYear) {
       this.nextYearDisabled = true;
@@ -290,10 +185,78 @@ export class CalenderModelComponent implements OnInit {
     }
   }
 
-  private disableDaysOnDateRange(
-    min: moment.MomentInput,
-    max: moment.MomentInput
-  ): void {
+  private initializeDates(): void {
+    if (this.buttons.length && !this.inputDateTime) {
+      this.setDate(this.buttons[0]);
+    }
+    this.min = this.min ? moment(this.min) : undefined;
+    this.max = this.max ? moment(this.max) : undefined;
+    this.date = this.inputDateTime ? moment(this.inputDateTime) : moment();
+    this.selectedDate = this.date.clone();
+  }
+
+  private generateMonths(): MonthC[][] {
+    return Array.from({ length: 12 }, (_, i) => ({
+      monthName: moment.monthsShort()[i],
+      monthNumber: i,
+    })).reduce(
+      (acc, month, i) => {
+        acc[Math.floor(i / 3)].push(month);
+
+        return acc;
+      },
+      [[], [], [], []] as MonthC[][]
+    );
+  }
+
+  private generateYears(): number[][] {
+    const startYear = 1970;
+    const endYear = 2099;
+    const yearsToSort = Array.from({ length: endYear - startYear + 1 }, (_, i) => startYear + i);
+
+    return Array.from({ length: Math.ceil(yearsToSort.length / 16) }, (_, i) => yearsToSort.slice(i * 16, (i + 1) * 16));
+  }
+
+  private findArrayInMatrix(matrix: number[][]): number {
+    const array = this.selectedYears.flat();
+    let index = -1;
+
+    matrix.some((item, i) => {
+      if (JSON.stringify(item) === JSON.stringify(array)) {
+        index = i;
+
+        return true;
+      } else {
+        return false;
+      }
+    });
+
+    return index;
+  }
+
+  private getSelectedYears(year: number): number[][] {
+    const subArray = this.years.find(subArrayX => subArrayX.includes(year));
+
+    return this.formatSelectedYears(subArray || this.years[0]);
+  }
+
+  private formatSelectedYears(selectedYears: number[]): number[][] {
+    return Array.from({ length: Math.ceil(selectedYears.length / 4) }, (_, i) => selectedYears.slice(i * 4, (i + 1) * 4));
+  }
+
+  private getFirstLastYear(): void {
+    this.firstYear = this.selectedYears[0][0];
+    const lastSubArray = this.selectedYears[this.selectedYears.length - 1];
+    this.lastYear = lastSubArray[lastSubArray.length - 1];
+  }
+
+  private setSelectedYears(index: number): number[][] {
+    const selectedArr = this.years[index];
+
+    return selectedArr ? this.formatSelectedYears(selectedArr) : [];
+  }
+
+  private disableDaysOnDateRange(min: moment.MomentInput, max: moment.MomentInput): void {
     for (const week of this.calendar) {
       for (const day of week.days) {
         if (min && day < min) {

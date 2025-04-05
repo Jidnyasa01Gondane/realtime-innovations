@@ -1,0 +1,7 @@
+**/*.spec.ts
+polyfills.ts
+/src/environments/*
+/src/themes/*
+main.ts
+zone-flags.ts
+test.ts

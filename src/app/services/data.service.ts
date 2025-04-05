@@ -35,7 +35,7 @@ export class DataService {
     return this.dbService.getByKey('employee', employeeId);
   }
 
-  deleteEmployeeById(employeeId: number): Observable<any> {
+  deleteEmployeeById(employeeId: number): Observable<void> {
     return this.dbService.deleteByKey('employee', employeeId);
   }
 
